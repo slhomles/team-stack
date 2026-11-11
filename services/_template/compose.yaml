@@ -1,0 +1,25 @@
+# MẪU — copy cả thư mục này thành services/<ten-dich-vu>/ rồi sửa.
+# Thư mục bắt đầu bằng "_" sẽ không được deploy.
+# Quy tắc CI kiểm tra: xem README.md, mục "Quy tắc".
+
+services:
+  ten-dich-vu:                  # = tên thư mục, hoặc "<tên thư mục>-xxx" nếu có nhiều container
+    image: nginx:1.27-alpine    # ghi rõ tag, KHÔNG dùng :latest
+    restart: unless-stopped
+    mem_limit: 256m             # bắt buộc
+    cpus: 0.5
+    # Nếu cần mật khẩu/token: nhờ Phúc tạo file này trên VM, KHÔNG commit mật khẩu
+    # env_file: /opt/stack/secrets/ten-dich-vu.env
+    ports:
+      - "8080:80"               # cổng bên trái phải chưa dịch vụ nào dùng
+    volumes:
+      - data:/usr/share/nginx/html          # dữ liệu -> named volume
+      # - ./config.conf:/etc/app/config.conf:ro   # file cấu hình -> bind mount :ro
+    networks: [shared]
+
+volumes:
+  data:
+
+networks:
+  shared:
+    external: true              # mạng chung: gọi dịch vụ khác bằng tên, vd host "mariadb"

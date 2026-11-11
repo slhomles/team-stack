@@ -1,0 +1,12 @@
+# Quy tắc sau ghi đè quy tắc trước (dòng khớp CUỐI CÙNG thắng).
+
+# 1) Mặc định: mọi thứ (script deploy, workflow, CODEOWNERS, README...) cần Phúc duyệt
+*                      @slhomles
+
+# 2) Thư mục services/: KHÔNG ghi owner -> dịch vụ mới thêm vào không cần ai duyệt
+/services/
+
+# 3) Dịch vụ ĐÃ "khoá": sửa hoặc xoá đều cần Phúc duyệt.
+#    Khi một dịch vụ mới đã chạy ổn, Phúc thêm 1 dòng cho nó ở đây.
+/services/_template/   @slhomles
+/services/mariadb/     @slhomles

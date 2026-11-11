@@ -1,0 +1,9 @@
+[Unit]
+Description=Chạy stack-sync mỗi 2 phút
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=2min
+
+[Install]
+WantedBy=timers.target

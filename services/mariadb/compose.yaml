@@ -1,0 +1,26 @@
+# Trên VM, file /opt/stack/secrets/mariadb.env chứa:
+#   MARIADB_ROOT_PASSWORD=...
+services:
+  mariadb:
+    image: mariadb:11.4
+    restart: unless-stopped
+    mem_limit: 1g
+    cpus: 1
+    env_file: /opt/stack/secrets/mariadb.env
+    ports:
+      - "3306:3306"
+    volumes:
+      - data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [shared]
+
+volumes:
+  data:
+
+networks:
+  shared:
+    external: true

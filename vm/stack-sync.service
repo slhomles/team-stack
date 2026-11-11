@@ -1,0 +1,8 @@
+[Unit]
+Description=Đồng bộ repo team-stack và deploy dịch vụ Docker
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/stack-sync

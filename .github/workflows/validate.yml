@@ -1,0 +1,21 @@
+name: validate
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # compose config báo lỗi nếu env_file không tồn tại, nên tạo file rỗng
+      # theo đúng quy ước /opt/stack/secrets/<tên-thư-mục>.env
+      - name: Tạo file secrets giả
+        run: |
+          sudo mkdir -p /opt/stack/secrets
+          for d in services/*/; do sudo touch "/opt/stack/secrets/$(basename "$d").env"; done
+
+      - name: Kiểm tra quy tắc dịch vụ
+        run: python3 scripts/validate.py
