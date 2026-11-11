@@ -1,0 +1,2 @@
+# All text files use LF, even when edited on Windows (CRLF breaks .sh scripts on the VM)
+* text=auto eol=lf
