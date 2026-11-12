@@ -10,3 +10,4 @@
 #    Khi một dịch vụ mới đã chạy ổn, Phúc thêm 1 dòng cho nó ở đây.
 /services/_template/   @slhomles
 /services/mariadb/     @slhomles
+/services/postgres/    @slhomles
