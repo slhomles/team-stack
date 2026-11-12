@@ -1,0 +1,6 @@
+# Public key dùng để MÃ HOÁ secrets (công khai, an toàn để trong repo).
+# Chỉ ai giữ private key tương ứng mới giải mã được.
+# VM team-stack (giải mã khi deploy)
+age1rrjdmnl95kvhzuqqtt6smkqhpakl37tum2avnrqs6rlre9j25szqc6a28d
+# Phúc (bản dự phòng, private key lưu ngoài VM)
+age1qzugjpzenvektfhhe949k7tm3mzgs4dqz0jfpqtryheekxu373aq3tnzhe

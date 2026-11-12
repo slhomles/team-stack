@@ -43,6 +43,16 @@ for d in sorted(p for p in SERVICES.iterdir() if p.is_dir() and not p.name.start
     if not (d / "compose.yaml").is_file():
         err(name, "thiếu file compose.yaml")
         continue
+    # Secrets chỉ được commit ở dạng đã mã hoá (secrets.env.age)
+    for f in sorted(d.rglob("*")):
+        if f.is_file() and f.name.endswith(".env"):
+            err(name, f"'{f.relative_to(ROOT)}' trông như secrets CHƯA mã hoá — xoá khỏi git, mã hoá thành secrets.env.age")
+    enc = d / "secrets.env.age"
+    if enc.is_file():
+        head = enc.read_bytes()[:40]
+        if not (head.startswith(b"age-encryption.org/v1") or head.startswith(b"-----BEGIN AGE ENCRYPTED FILE-----")):
+            err(name, "secrets.env.age không phải file đã mã hoá bằng age")
+
     cfg = load(d)
     if cfg is None:
         continue

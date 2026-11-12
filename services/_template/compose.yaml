@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     mem_limit: 256m             # bắt buộc
     cpus: 0.5
-    # Nếu cần mật khẩu/token: nhờ Phúc tạo file này trên VM, KHÔNG commit mật khẩu
+    # Nếu cần mật khẩu/token: mã hoá thành secrets.env.age (xem README), rồi bỏ comment dòng dưới
     # env_file: /opt/stack/secrets/ten-dich-vu.env
     ports:
       - "8080:80"               # cổng bên trái phải chưa dịch vụ nào dùng
