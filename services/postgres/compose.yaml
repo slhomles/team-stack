@@ -1,0 +1,32 @@
+# Trên VM, file /opt/stack/secrets/postgres.env chứa:
+#   POSTGRES_USER=postgres
+#   POSTGRES_DB=postgres
+#   POSTGRES_PASSWORD=...   (superuser, chỉ Phúc giữ)
+#   TEAM_PASSWORD=...       (user "team", đưa cho cả nhóm)
+services:
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
+    mem_limit: 1g
+    cpus: 1
+    env_file: /opt/stack/secrets/postgres.env
+    ports:
+      - "5432:5432"
+    volumes:
+      # Postgres 18 trở lên: mount ở /var/lib/postgresql (bản 17 trở xuống mới là .../data)
+      - data:/var/lib/postgresql
+      # Chạy MỘT LẦN khi volume còn trống: tạo user và database "team"
+      - ./init-team.sh:/docker-entrypoint-initdb.d/init-team.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [shared]
+
+volumes:
+  data:
+
+networks:
+  shared:
+    external: true
