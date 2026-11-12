@@ -1,0 +1,12 @@
+services:
+  demo:
+    image: busybox:1.36
+    restart: unless-stopped
+    mem_limit: 64m
+    env_file: /opt/stack/secrets/demo.env
+    command: ["sh", "-c", "echo HELLO=$$HELLO; sleep infinity"]
+    networks: [shared]
+
+networks:
+  shared:
+    external: true
