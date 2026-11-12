@@ -1,20 +1,21 @@
 version: "3.8"
 
 services:
-    test_app:
-    image: nginx:1.27-alpine    # Dùng image cụ thể, KHÔNG dùng :latest
+  test_app:
+    image: nginx:1.27-alpine
     restart: unless-stopped
-    mem_limit: 256m             # Giới hạn RAM bắt buộc[cite: 4]
-    cpus: 0.5                   # Giới hạn CPU bắt buộc[cite: 4]
+    mem_limit: 256m
+    cpus: 0.5
     ports:
-      - "8081:80"               # ĐỔI SỐ BÊN TRÁI (VD: 8081) thành một port chưa ai dùng trên server[cite: 4]
+      - "8081:80"
     volumes:
-      - data:/usr/share/nginx/html # Thư mục lưu trữ dữ liệu của dịch vụ[cite: 4]
-    networks: [shared]          # Kết nối vào mạng chung để gọi qua lại với các dịch vụ khác[cite: 4]
+      - data:/usr/share/nginx/html
+    networks:
+      - shared
 
 volumes:
   data:
 
 networks:
   shared:
-    external: true              # Mạng chung của server[cite: 4]
+    external: true
