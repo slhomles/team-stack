@@ -15,7 +15,7 @@ vm/                        ← cài đặt VM một lần
 
 1. Tạo nhánh mới.
 2. Copy `services/_template` thành `services/<ten-dich-vu>` và sửa `compose.yaml` (tên service = tên thư mục).
-3. Nếu cần mật khẩu/token: nhắn Phúc tên các biến. Phúc sẽ tạo `/opt/stack/secrets/<ten-dich-vu>.env` trên VM. Mật khẩu **không** commit vào git.
+3. Nếu cần mật khẩu/token: mã hoá thành `services/<ten-dich-vu>/secrets.env.age` theo mục "Secrets" cuối README. **Không** commit file `.env` gốc.
 4. Mở Pull Request. Khi check `validate` xanh thì tự bấm Merge.
 5. Khoảng 2 phút sau dịch vụ chạy trên VM.
 
@@ -98,3 +98,29 @@ CODEOWNERS chỉ hiểu đường dẫn, không biết dịch vụ nào "đã c�
 ```
 
 Coi khoảng thời gian trước khi khoá là giai đoạn để người tạo chỉnh cho dịch vụ chạy ổn.
+
+## Secrets (mật khẩu, token) cho dịch vụ
+
+Mật khẩu được commit vào repo ở dạng **đã mã hoá** bằng [age](https://github.com/FiloSottile/age). File `age-recipients.txt` chứa public key của VM và của Phúc: ai cũng mã hoá được, nhưng chỉ VM (lúc deploy) và Phúc (bản dự phòng) giải mã được.
+
+**Linux** (cài: `sudo apt install age`):
+
+```bash
+nano /tmp/ten-dich-vu.env      # soạn NGOÀI repo, mỗi dòng một biến: KEY=gia-tri
+age -R age-recipients.txt -o services/ten-dich-vu/secrets.env.age /tmp/ten-dich-vu.env
+rm /tmp/ten-dich-vu.env        # sau khi đã lưu bản gốc vào trình quản lý mật khẩu của bạn
+```
+
+**Windows PowerShell** (cài: `winget install FiloSottile.age`):
+
+```powershell
+notepad $env:TEMP\ten-dich-vu.env
+age -R age-recipients.txt -o services\ten-dich-vu\secrets.env.age $env:TEMP\ten-dich-vu.env
+Remove-Item $env:TEMP\ten-dich-vu.env
+```
+
+Trong `compose.yaml` của dịch vụ, khai báo `env_file: /opt/stack/secrets/ten-dich-vu.env`. Khi deploy, VM tự giải mã `secrets.env.age` ra đúng đường dẫn đó.
+
+- **Không ai giải mã lại được bản trong repo, kể cả người tạo.** Hãy tự giữ bản gốc.
+- Đổi mật khẩu: mã hoá file mới, ghi đè `secrets.env.age`, mở PR. Dịch vụ đã khoá thì cần Phúc duyệt.
+- CI chặn mọi file `*.env` chưa mã hoá trong `services/`.
