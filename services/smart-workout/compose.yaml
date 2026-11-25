@@ -1,0 +1,32 @@
+# Dịch vụ của dự án smart_workout (https://github.com/slhomles/smart_workout).
+# Hiện chỉ có Redis (cache quyền, rate limit — doc 05 §7.2 mục 3).
+# PostgreSQL có schema/seed riêng và backend sẽ thêm vào cùng thư mục này sau,
+# đặt tên smart-workout-db, smart-workout-backend.
+#
+# Kết nối: từ dịch vụ khác trên mạng shared dùng host "smart-workout-redis":6379;
+# từ máy trong tailnet dùng <ip-tailscale-cua-vm>:6379.
+# Không đặt mật khẩu vì VM không mở cổng ra Internet (chỉ truy cập qua Tailscale).
+services:
+  smart-workout-redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "200mb", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [shared]
+
+volumes:
+  data:
+
+networks:
+  shared:
+    external: true
